@@ -1,4 +1,4 @@
-## LSTM-RNN :brain: vs GARCH :chart_with_upwards_trend: 
+## LSTM-RNN :brain: vs ARIMA :chart_with_upwards_trend: 
 
 >This repository documents the development of a LSTM-RNN and GARCH model in MATLAB.  
 Hyperparameters of the LSTM are adjusted to avoid over-fitting and under-fitting.
