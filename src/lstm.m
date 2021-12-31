@@ -12,7 +12,7 @@ month_max = table(num_date, tmaxVals.GroupMax);
 figure
 plot(month_max.num_date, month_max.Var2);
 xlabel('Month')
-ylabel('Peak Discharge (m^3/s)')
+ylabel('Peak Flow (m^3/s)')
 
 % Check if data has missing values.
 max_flows = table2array(month_max(:,2)); 
