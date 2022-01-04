@@ -3,7 +3,7 @@ tmaxVals=rowfun(@max,kegworth,'InputVariables','Discharge', ...
                           'GroupingVariables',{'Year','Month'}, ...
                           'OutputVariableNames',{'GroupMax', 'Date'});
 
-% Convert day, month, year to a single datetime variable.
+% Convert day, month, year to joined datetime variable.
 num_date = datetime(tmaxVals.Year, tmaxVals.Month, tmaxVals.Date, 'Format', 'MMM-yyyy'); 
 month_max = table(num_date, tmaxVals.GroupMax); 
 % Just get month-year format.
