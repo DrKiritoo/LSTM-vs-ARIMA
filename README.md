@@ -1,4 +1,4 @@
-## LSTM-RNN :brain: vs GARCH :chart_with_upwards_trend: 
+## LSTM-RNN :brain: vs ARIMA :chart_with_upwards_trend: 
 
 >This repository documents the development of a LSTM-RNN and GARCH model in MATLAB.  
 Hyperparameters of the LSTM are adjusted to avoid over-fitting and under-fitting.
@@ -7,8 +7,7 @@ The 'Adam' optimisation algorithm is adopted to improve LSTM-RNN performance.
 Time series of available peak monthly discharge at station 28074 Kegworth, River Soar.
 There are 84 observations missing between 07/02/1984 to 01/03/1991:
 
-![image](https://user-images.githubusercontent.com/86715613/147722794-63c14193-0621-43a2-91d7-90599998ef28.png)
-
+![image](https://user-images.githubusercontent.com/86715613/147801849-537b5321-dcf8-45fe-adad-0583299d74de.png)
 
 >Havard references to relevant research papers :open_book::
 
