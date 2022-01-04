@@ -4,9 +4,9 @@ tmaxVals=rowfun(@max,kegworth,'InputVariables','Discharge', ...
                           'OutputVariableNames',{'GroupMax', 'Date'});
 
 % Convert day, month, year to a single datetime variable.
-num_dates = datetime([tmaxVals.Year, tmaxVals.Month, tmaxVals.Date],...
-    "Format","dd-MMM-uuuu"); 
+num_date = datetime(tmaxVals.Year, tmaxVals.Month, tmaxVals.Date, 'Format', 'MMM-yyyy'); 
 month_max = table(num_date, tmaxVals.GroupMax); 
+% Just get month-year format.
 
 % Plot date of max vs max monthly discharge.
 figure
