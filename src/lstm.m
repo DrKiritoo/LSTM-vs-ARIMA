@@ -1,21 +1,18 @@
 % Create time series of monthy peak flow from daily flow data.
 tmaxVals=rowfun(@max,kegworth,'InputVariables','Discharge', ...
                           'GroupingVariables',{'Year','Month'}, ...
-                          'OutputVariableNames',{'GroupMax', 'Date'});
-
-% Convert day, month, year to joined datetime variable.
-num_date = datetime(tmaxVals.Year, tmaxVals.Month, tmaxVals.Date, 'Format', 'MMM-yyyy'); 
-month_max = table(num_date, tmaxVals.GroupMax); 
-% Just get month-year format.
+                          'OutputVariableNames',{'GroupMax', 'Day'});
+tmaxVals.Day(:, 1) = 1; % Ensure time-series is evenly spaced.
+num_date = datetime(tmaxVals.Year, tmaxVals.Month, tmaxVals.Day, 'Format', 'MMM-yyyy');
 
 % Plot date of max vs max monthly discharge.
 figure
-plot(month_max.num_date, month_max.Var2);
+plot(num_date, tmaxVals.GroupMax); 
 xlabel('Month')
 ylabel('Peak Flow (m^3/s)')
 
 % Check if data has missing values.
-max_flows = table2array(month_max(:,2)); 
+max_flows = tmaxVals.GroupMax; 
 len = length(max_flows(:,1));
 missing_values = 0; 
 
