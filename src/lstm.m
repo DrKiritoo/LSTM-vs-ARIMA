@@ -1,34 +1,19 @@
 % Create time series of monthy peak flow from daily flow data.
-tmaxVals=rowfun(@max,kegworth,'InputVariables','Discharge', ...
-                          'GroupingVariables',{'Year','Month'}, ...
-                          'OutputVariableNames',{'GroupMax', 'Day'});
-tmaxVals.Day(:, 1) = 1; % Ensure time-series is evenly spaced.
-num_date = datetime(tmaxVals.Year, tmaxVals.Month, tmaxVals.Day, 'Format', 'MMM-yyyy');
+% Create 7 day rolling sum window.
 
-% Plot date of max vs max monthly discharge.
-figure
-plot(num_date, tmaxVals.GroupMax); 
-xlabel('Month')
-ylabel('Peak Flow (m^3/s)')
+new_keg = kegworth(4474:15280, :); % Start after 7 year gap.
+t = datetime(1991,3,1):calmonths(1):datetime(2020,9,30);
+daysPerMonth = days(diff(t)); % Calculate the number of days per month. 
 
-% Check if data has missing values.
-max_flows = tmaxVals.GroupMax; 
-len = length(max_flows(:,1));
-missing_values = 0; 
+window_sum = zeros(1, length(daysPerMonth));
 
-for i = 1:len
-    if isnan(max_flows(i, 1))
-        missing_values = missing_values + 1; 
-        max_flows(i, 1) = 0;
-    end
+for j = 1:daysPerMonth(1,:)
+    % Get 7 day window sum of discharges per month. 
+    window_sum(1, j) = sum(new_keg.Discharge(j:j+6, 1)); 
 end
 
-% Percentage of data missing.
-disp(missing_values * 100 / len);
 
 
-
-        
 
 
 
