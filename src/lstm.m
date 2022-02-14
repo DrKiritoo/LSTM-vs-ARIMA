@@ -1,23 +1,30 @@
-% Create time series of monthy peak flow from daily flow data.
-% Create 7 day rolling sum window.
+% Start time series after 7 year gap.
+completed_keg = kegworth(4474:15280, :); 
 
-new_keg = kegworth(4474:15280, :); % Start after 7 year gap.
-t = datetime(1991,3,1):calmonths(1):datetime(2020,9,30);
-daysPerMonth = days(diff(t)); % Calculate the number of days per month. 
+% Convert table to array.
+a = table2array(completed_keg); 
 
-window_sum = zeros(1, length(daysPerMonth));
+% Calculate rolling total of every value.
+window = 6; % window in movmean function is window + 1
+total = [a(:, 1), a(:,2), a(:, 3), movmean(a(:,4), [0 window])*7]; 
 
-for j = 1:daysPerMonth(1,:)
-    % Get 7 day window sum of discharges per month. 
-    window_sum(1, j) = sum(new_keg.Discharge(j:j+6, 1)); 
-end
+% Convert array to table and give column headings.
+final_keg = array2table(total); 
+final_keg.Properties.VariableNames{1} = 'Days';
+final_keg.Properties.VariableNames{2} = 'Months';
+final_keg.Properties.VariableNames{3} = 'Years';
+final_keg.Properties.VariableNames{4} = 'Flows';
 
+% Find maximum discharge of every month.
+tmaxVals=rowfun(@max,final_keg,'InputVariables','Flows', ...
+                          'GroupingVariables',{'Years','Months'}, ...
+                          'OutputVariableNames',{'GroupMax'});
 
-
-
-
-
-
+% Plot maximum 7 day total flow against months forming new time series.
+figure
+plot(1:355, tmaxVals.GroupMax); 
+xlabel('Months')
+ylabel('Peak Flow (m^3/s)')
 
 
 
