@@ -1,6 +1,6 @@
 ## LSTM-RNN :brain: vs ARIMA :chart_with_upwards_trend: 
 
->This repository documents the development of a LSTM-RNN and GARCH model in MATLAB.  
+>This repository documents the development of a LSTM-RNN and ARIMA model in MATLAB.  
 Hyperparameters of the LSTM are adjusted to avoid over-fitting and under-fitting.
 The 'Adam' optimisation algorithm is adopted to improve LSTM-RNN performance.
 
