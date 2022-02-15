@@ -1,3 +1,5 @@
+%% Stage 0: Re-format Kegworth time series 
+
 % Start time series after 7 year gap.
 completed_keg = kegworth(4474:15280, :); 
 
@@ -24,7 +26,21 @@ tmaxVals=rowfun(@max,final_keg,'InputVariables','Flows', ...
 figure
 plot(1:355, tmaxVals.GroupMax); 
 xlabel('Months')
-ylabel('Peak Flow (m^3/s)')
+ylabel('Rolling 7-day total flow (m^3/s)')
+
+%% Stage 1: Obtain time series characteristics
+% Link: https://www.machinelearningplus.com/time-series/time-series-analysis-python/
+% 1. Trend: Plot trend on graph. 
+
+% 2. Seasonality: Do ACF and if autocorrelated then Mann-Kendall Test & Sen's
+% slope else original Mann-Kendall Test 
+
+% 3. Stationarity: Augmented Dickey Fuller Test
+
+%% Stage 2a: Pre-process data for LSTM-RNN 
+
+%% Stage 2b: Pre-process data for ARIMA
+% Do (+PACF?)
 
 
 
