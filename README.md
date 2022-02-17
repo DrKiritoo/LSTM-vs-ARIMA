@@ -7,7 +7,6 @@ The 'Adam' optimisation algorithm is adopted to improve LSTM-RNN performance.
 Time series of available peak monthly discharge at station 28074 Kegworth, River Soar.
 There are 84 observations missing between 07/02/1984 to 01/03/1991:
 
-![image](https://user-images.githubusercontent.com/86715613/147801824-25a054cf-2dd0-4895-9565-14d47ef3f91d.png)
 
 
 >Havard references to relevant research papers :open_book::

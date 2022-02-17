@@ -1,41 +1,46 @@
-% Create time series of monthy peak flow from daily flow data.
-tmaxVals=rowfun(@max,kegworth,'InputVariables','Discharge', ...
-                          'GroupingVariables',{'Year','Month'}, ...
-                          'OutputVariableNames',{'GroupMax', 'Date'});
+%% Stage 0: Re-format Kegworth time series 
 
-% Convert day, month, year to a single datetime variable.
-num_dates = datetime([tmaxVals.Year, tmaxVals.Month, tmaxVals.Date],...
-    "Format","dd-MMM-uuuu"); 
-month_max = table(num_date, tmaxVals.GroupMax); 
+% Start time series after 7 year gap.
+completed_keg = kegworth(4474:15280, :); 
 
-% Plot date of max vs max monthly discharge.
+% Convert table to array.
+a = table2array(completed_keg); 
+
+% Calculate rolling total of every value.
+window = 6; % window in movmean function is window + 1
+total = [a(:, 1), a(:,2), a(:, 3), movmean(a(:,4), [0 window])*7]; 
+
+% Convert array to table and give column headings.
+final_keg = array2table(total); 
+final_keg.Properties.VariableNames{1} = 'Days';
+final_keg.Properties.VariableNames{2} = 'Months';
+final_keg.Properties.VariableNames{3} = 'Years';
+final_keg.Properties.VariableNames{4} = 'Flows';
+
+% Find maximum discharge of every month.
+tmaxVals=rowfun(@max,final_keg,'InputVariables','Flows', ...
+                          'GroupingVariables',{'Years','Months'}, ...
+                          'OutputVariableNames',{'GroupMax'});
+
+% Plot maximum 7 day total flow against months forming new time series.
 figure
-plot(month_max.num_date, month_max.Var2);
-xlabel('Month')
-ylabel('Peak Flow (m^3/s)')
+plot(1:355, tmaxVals.GroupMax); 
+xlabel('Months')
+ylabel('Rolling 7-day total flow (m^3/s)')
 
-% Check if data has missing values.
-max_flows = table2array(month_max(:,2)); 
-len = length(max_flows(:,1));
-missing_values = 0; 
+%% Stage 1: Obtain time series characteristics
+% Link: https://www.machinelearningplus.com/time-series/time-series-analysis-python/
+% 1. Trend: Plot trend on graph. 
 
-for i = 1:len
-    if isnan(max_flows(i, 1))
-        missing_values = missing_values + 1; 
-        max_flows(i, 1) = 0;
-    end
-end
+% 2. Seasonality: Do ACF and if autocorrelated then Mann-Kendall Test & Sen's
+% slope else original Mann-Kendall Test 
 
-% Percentage of data missing.
-disp(missing_values * 100 / len);
+% 3. Stationarity: Augmented Dickey Fuller Test
 
+%% Stage 2a: Pre-process data for LSTM-RNN 
 
-
-        
-
-
-
-
+%% Stage 2b: Pre-process data for ARIMA
+% Do (+PACF?)
 
 
 
