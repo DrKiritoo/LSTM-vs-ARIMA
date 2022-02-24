@@ -8,7 +8,7 @@ a = table2array(completed_keg);
 
 % Calculate rolling total of every value.
 window = 6; % window in movmean function is window + 1
-total = [a(:, 1), a(:,2), a(:, 3), movmean(a(:,4), [0 window])*7]; 
+total = [a(:, 1), a(:,2), a(:, 3), movmean(a(:,4), [0 window])*7];  
 
 % Convert array to table and give column headings.
 final_keg = array2table(total); 
@@ -24,18 +24,28 @@ tmaxVals=rowfun(@max,final_keg,'InputVariables','Flows', ...
 
 % Plot maximum 7 day total flow against months forming new time series.
 figure
+subplot(3,1,1); 
 plot(1:355, tmaxVals.GroupMax); 
-xlabel('Months')
-ylabel('Rolling 7-day total flow (m^3/s)')
+xlabel('Months');
+ylabel('Q* (m^3/s)');
+xlim([0 355]);
 
-%% Stage 1: Obtain time series characteristics
-% Link: https://www.machinelearningplus.com/time-series/time-series-analysis-python/
-% 1. Trend: Plot trend on graph. 
+%% Stage 1: Conduct test for stationarity 
 
-% 2. Seasonality: Do ACF and if autocorrelated then Mann-Kendall Test & Sen's
-% slope else original Mann-Kendall Test 
+% Determine trend: Plot long-term trend on graph (Using trenddecomp MATLAB)
+trend = trenddecomp(tmaxVals.GroupMax); 
+subplot(3,1,2);
+plot(1:355, trend);
+xlabel('Months');
+ylabel('Q* (m^3/s)');
+xlim([0 355]);
 
-% 3. Stationarity: Augmented Dickey Fuller Test
+% Determine optimal lag number via BIC methodology.
+
+
+% Input final parameters into modified LM test. 
+
+
 
 %% Stage 2a: Pre-process data for LSTM-RNN 
 
