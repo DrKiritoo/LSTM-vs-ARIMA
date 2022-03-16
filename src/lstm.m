@@ -1,4 +1,4 @@
-%% 2 Preliminary checks & Plots
+%% Stage 0: Time series characteristics of daily precipitation & flow 
 
 % Plot of precipitation and flow on the same graph.
 table_kegworth_flow = array2table(kegworth_flow); 
@@ -18,22 +18,52 @@ set(gca, 'YDir','reverse');
 ylabel('Precipitation (mm)'); 
 ylim([0 200]); 
 
-% Conduct DW test to check for autocorrelation.
-days = transpose(1:9803);
-date_flow_table = table(days, table_kegworth_flow.kegworth_flow4);
-mdl = fitlm(date_flow_table);
-[p_value,DW] = dwtest(mdl,'approximate','both');
+% Conduct Ljung-Box test to check for autocorrelation for flow...
+% @ alpha = 0.05.
+res_flow = table_kegworth_flow.kegworth_flow4 -...
+    mean(table_kegworth_flow.kegworth_flow1);
+[h1_flow, pValue_flow, stat_flow, cValue_flow] =...
+    lbqtest(res_flow, 'Lags', 20); 
+disp('Daily flow series test for autocorrelation:')
+disp(h1_flow); 
+disp(pValue_flow); 
+disp(stat_flow); 
+disp(cValue_flow); 
 
-% Conduct seasonal Mann Kendall test to check hydrological significance.
- %[~, ~, h, sig, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~] =...
-  %   ktaub([kegworth_precip.Precipitation...
-  %   table_kegworth_flow.kegworth_flow4] , 0.1, 1); 
-%test = [kegworth_precip.Precipitation...
- %    table_kegworth_flow.kegworth_flow4];
-%disp(h);
-%disp(sig); 
+% Conduct Ljung-Box test to check for autocorrelation for...
+% precipitation @ alpha = 0.05.
 
-%% Stage 0: Re-format original Kegworth time series.
+res_precip = kegworth_precip.Precipitation -...
+    mean(kegworth_precip.Precipitation);
+[h1_precip, pValue_precip, stat_precip, cValue_precip] =...
+    lbqtest(res_precip, 'Lags', 20);
+disp('Daily precipitation series test for autocorrelation:')
+disp(h1_precip); 
+disp(pValue_precip); 
+disp(stat_precip); 
+disp(cValue_precip); 
+
+% Call the modified Mann-Kendall test for flow (mmtest).
+[H, pp_value] = mmtest(res_flow, 0.05); 
+disp('Modified Mann-Kendall test results for flow:')
+disp(H);
+disp(pp_value);
+
+% Compute Sen's slope for flow.
+ss_flow = Sen_Slope(res);
+disp(ss_flow); 
+
+% Call the modified Mann-Kendall test for flow (mmtest).
+[H_2, pp_value_2] = mmtest(res_precip, 0.05); 
+disp('Modified Mann-Kendall test results for precipitation:')
+disp(H_2);
+disp(pp_value_2);
+
+% Compute Sen's slope for precipitation.
+
+
+
+%% Stage 1: Re-format original Kegworth flow series.
 
 % Start time series after 7 year gap.
 completed_keg = kegworth(4474:15280, :); 
@@ -63,29 +93,18 @@ months = 1:length(tmaxVals.GroupMax);
 % Plot maximum 7 day total flow against months forming new time series.
 figure
 % subplot(4,2,1); 
-plot(months, tmaxVals.GroupMax, 'black'); 
+plot(months, tmaxVals.GroupMax); 
 xlabel('Months');
-ylabel('Q (m^3/s)');
+ylabel('q* (m^{3}s{-1})');
 xlim([0 355]);
 
-%% Stage 1: Decompose time series into deterministic components.
+%% Stage 2a: Decompose time series using SSA.
 
 [trend, seasonal, irregular] = trenddecomp(tmaxVals.GroupMax, ...
-    NumSeasonal=1); % 2 seasonal period specified to see...
-% short-term and long-term seasonality.
-
-%% Moving average of 12 months-TEST PLOT. 
-
-% Create a 12 month moving average trend - TEST
-figure
-movave = transpose(movmean(tmaxVals.GroupMax, [0 12])); 
-plot(months, movave); 
-xlabel('Months');
-ylabel('12-month trend + noise');
-xlim([0 355]);
-hold on 
-plot(months, irregular,'black'); 
-%% Plot decomposed elements 'trenddecomp'.
+    "ssa", (355-1)/2, NumSeasonal=1);
+% The lag value must be a positive real scalar between 3 and N/2...
+% where N is the number of elements in the first input.
+% Therefore, 355 - 1/2 =  N 
 
 % Long-term trend component + irregular component: 
 figure 
@@ -94,17 +113,15 @@ plot(months, irregular,'black');
 xlabel('Months');
 ylabel('I_t');
 xlim([0 355]);
-% Plot irregular component on the same graph as trend: 
 hold on 
 plot(1:355, trend,'--');
 
-% Seasonal component:
+% Seasonal component (used to support ACF plot results and model):
 subplot(4, 1, 2);
 plot(1:355, seasonal,'black'); 
 xlabel('Months');
 ylabel('S_t');
 xlim([0 355]);
-
 
 %% Determine optimal lag number via BIC methodology.
 
@@ -133,6 +150,7 @@ minP = find(minBIC == BIC);
 
 
 %% Check estimated optimal model with ACF and PACF + seasonality.
+% Interpretation: https://www.baeldung.com/cs/acf-pacf-plots-arma-modeling
 
 % Calculate ACF and PACF values to 50 lags.
 lags = (0:1:50); 
@@ -169,9 +187,10 @@ xlim([0 50]);
 
 % (4) Input 'minP' into modified LM test to check for stationarity
 % If h = 0 then accept the null hypothesis. If h = 1 reject null.
-h = lmctest(tmaxVals.GroupMax,...
-    "trend", false, "Lags", 3, "Test", "var2", "alpha", 0.05);
-disp(h); 
+[h, p_value, ~, ~] = lmctest(tmaxVals.GroupMax,...
+    "trend", false, "Lags", 4, "Test", "var2", "alpha", 0.05);
+disp(h);
+disp(p_value);
 % In this case h = 0 therefore time series is stationary.
 % no additional stationary pre-processing is required.
 
