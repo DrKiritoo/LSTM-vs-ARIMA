@@ -50,7 +50,8 @@ disp(H);
 disp(pp_value);
 
 % Compute Sen's slope for flow.
-ss_flow = Sen_Slope(res);
+ss_flow = Sen_Slope(res_flow);
+disp('Sens slope magnitude for precipitation:');
 disp(ss_flow); 
 
 % Call the modified Mann-Kendall test for flow (mmtest).
@@ -60,8 +61,18 @@ disp(H_2);
 disp(pp_value_2);
 
 % Compute Sen's slope for precipitation.
+ss_precip = Sen_Slope(res_precip);
+disp('Sens slope magnitude for precipitation:')
+disp(ss_precip); 
 
-
+% Compute Pearson's correlation coefficients between flow and...
+% precipitation
+rho = corrcoef(table_kegworth_flow.kegworth_flow4,...
+    kegworth_precip.Precipitation);
+disp(rho); % Low value 0.3315 indicates weak correlation, therefore...
+% precipitation was not considered at a unique input variable +...
+% the results of the MK test show neither exhibit a trend over time +...
+% precipitation more strongly than flow. 
 
 %% Stage 1: Re-format original Kegworth flow series.
 
@@ -123,7 +134,7 @@ xlabel('Months');
 ylabel('S_t');
 xlim([0 355]);
 
-%% Determine optimal lag number via BIC methodology.
+%% Stage 2b: Determine optimal lag number via BIC methodology.
 
 % (1) Create zeros matrix to store all 16 combinations of ARIMA models...
 LogL = zeros(4,4); 
@@ -149,7 +160,7 @@ minBIC = min(BIC,[],'all');
 minP = find(minBIC == BIC); 
 
 
-%% Check estimated optimal model with ACF and PACF + seasonality.
+%% Stage 2c: Check estimated optimal model with ACF and PACF + seasonality.
 % Interpretation: https://www.baeldung.com/cs/acf-pacf-plots-arma-modeling
 
 % Calculate ACF and PACF values to 50 lags.
@@ -183,7 +194,7 @@ hold on
 plot(lags, lower_bound,  '--'); % Plot lower bound 
 xlim([0 50]);
 
-%% Conduct Leybourne-McCabe test for stationarity.
+%% Stage 2d: Conduct Leybourne-McCabe test for stationarity.
 
 % (4) Input 'minP' into modified LM test to check for stationarity
 % If h = 0 then accept the null hypothesis. If h = 1 reject null.
@@ -194,10 +205,11 @@ disp(p_value);
 % In this case h = 0 therefore time series is stationary.
 % no additional stationary pre-processing is required.
 
-%% Stage 2a: Pre-process data for LSTM-RNN 
+%% Stage 3: Pre-processing - Normalise time series data. 
 
-%% Stage 2b: Pre-process data for ARIMA
-% Do (+PACF?)
+%% Stage 4: Develop LSTM-RNN model.
+
+%% Stage 4: Develop ARIMA model.
 % When in doubt - Fetch -> Pull -> Push 
 
 
