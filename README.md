@@ -1,3 +1,4 @@
+
 ## Comparision of two data-driven approaches for long-term time series flood forecasting with a limited dataset - LSTM vs ARIMA  
 
 >This repository documents the development of an LSTM and ARIMA model in MATLAB.  
@@ -71,11 +72,19 @@ Further assessment of model bias and variance were also conducted formally via t
 
 ---
 ### ___Helpful reading:___
->Havard references to some of key research papers that aided this project :open_book::
+>Havard references to some of key research papers that aided this project in no particular order :open_book::
 
 | No. |  Paper/Book | 
 | --- |:----------:| 
-|1    |Hrnjica, B. and Bonacci, O. (2019) ‘Lake Level Prediction using Feed Forward and Recurrent Neural Networks’, Water Resources Management, 33(7), pp. 2471–2484. doi:10.1007/S11269-019-02255-2/TABLES/5. |
-|2    |Sahoo, B.B., Jha, R., Singh, A. and Kumar, D. (2019) ‘Long short-term memory (LSTM) recurrent neural network for low-flow hydrological time series forecasting’, Acta Geophysica, 67(5), pp. 1471–1481. doi:10.1007/S11600-019-00330-1/FIGURES/9.|
-
+|1    |Kratzert, F. et al. (2019) ‘NeuralHydrology – Interpreting LSTMs in Hydrology’, Lecture Notes in Computer Science (including subseries Lecture Notes in Artificial Intelligence and Lecture Notes in Bioinformatics), 11700 LNCS, pp. 347–362. doi:10.1007/978-3-030-28954-6_19.|
+|2    |Le, X.H. et al. (2019) ‘Application of Long Short-Term Memory (LSTM) Neural Network for Flood Forecasting’, Water 2019, Vol. 11, Page 1387, 11(7), p. 1387. doi:10.3390/W11071387|
+|3    |Sahoo, B.B., Jha, R., Singh, A. and Kumar, D. (2019) ‘Long short-term memory (LSTM) recurrent neural network for low-flow hydrological time series forecasting’, Acta Geophysica, 67(5), pp. 1471–1481. doi:10.1007/S11600-019-00330-1/FIGURES/9.|
+|4  |Box, G.E.P., Jenkins, G.M. and Reinsel, G.C. (1994) ‘Analysis of seasonal time series’, in Time series analysis : forecasting and control. 3rd ed. Englewood Cliffs  N.J.: Prentice Hall, p. 306.|
+|5  |Yu, Z. et al. (2017) ‘ARIMA modelling and forecasting of water level in the middle reach of the Yangtze River’, 2017 4th International Conference on Transportation Information and Safety, ICTIS 2017 - Proceedings, pp. 172–177. doi:10.1109/ICTIS.2017.8047762.|
+|6  |Srivastava, N. et al. (2014) ‘Dropout: A Simple Way to Prevent Neural Networks from Overfitting’, Journal of Machine Learning Research, 15, pp. 1929–1958|
+|7  |Golyandina, N. and Zhigljavsky, A. (2013) Singular Spectrum Analysis for Time Series. Berlin, Heidelberg: Springer Berlin Heidelberg (SpringerBriefs in Statistics). doi:10.1007/978-3-642-34913-3|
+|8  |Berardi, V.L. and Zhang, G.P. (2003) ‘An empirical investigation of bias and variance in time series forecasting: Modeling considerations and error evaluation’, IEEE Transactions on Neural Networks, 14(3), pp. 668–679. doi:10.1109/TNN.2003.810601|
+|9  |Hamed, K.H. and Ramachandra Rao, A. (1998) ‘A modified Mann-Kendall trend test for autocorrelated data’, Journal of Hydrology, 204(1–4), pp. 182–196. doi:10.1016/S0022-1694(97)00125-X.|
+|10 |Legates, D.R. and McCabe, G.J. (1999) ‘Evaluating the use of “goodness-of-fit” measures in hydrologic and hydroclimatic model validation’, Water Resources Research, 35(1), pp. 233–241. doi:10.1029/1998WR900018/FORMAT/PDF|
+|11 |Leybourne, S.J. and HcCabe, B.P.M. (1999) ‘Modified stationarity tests with data-dependent model-selection rules’, Journal of Business and Economic Statistics, 17(2), pp. 264–270. doi:10.1080/07350015.1999.10524816.|
 
