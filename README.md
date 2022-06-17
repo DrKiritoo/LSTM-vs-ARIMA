@@ -1,4 +1,4 @@
-## Comparision of two data-driven approaches for long-term time series flood forecasting with a limite dataset - LSTM vs ARIMA  
+## Comparision of two data-driven approaches for long-term time series flood forecasting with a limited dataset - LSTM vs ARIMA  
 
 >This repository documents the development of an LSTM and ARIMA model in MATLAB.  
 
@@ -65,7 +65,7 @@ The BIC values were used in conjunction with the ACF and PACF correlograms shown
 
 >All of the above steps steps are condensed in the flow chart below: 
 
-![Flowchart of procedure](https://user-images.githubusercontent.com/86715613/174200951-81e6b0fe-85e9-46e1-87a2-3ecc55826446.png)
+![Flowchart of procedure](https://user-images.githubusercontent.com/86715613/174206891-002712c0-1429-4b67-9025-0abbf9a726a4.png)
 
 Further assessment of model bias and variance were also conducted formally via the Shapiro-Wilk test and graphically via Q-Q plots and histograms.
 
