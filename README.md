@@ -31,7 +31,7 @@ Where _Q<sub>i, j</sub>_ is the observation on day _j_ of the _i<sup>th</sup>_ m
 
 Note: The number of days in a given month ranges from 28 to 31, the example above, demonstrates the algorithm on a month with 30 days, but it is applicable to all month sizes.
 
-*#3* :chart_with_downwards_trend: Staionary characteristic analysis (SSA time series decomposition, modified Leybourne-McCabe stationary test...)
+*#3* :chart_with_downwards_trend: Stationary characteristic analysis (SSA time series decomposition, modified Leybourne-McCabe stationary test...)
 
 ![image](https://user-images.githubusercontent.com/86715613/174203743-eb4c6856-4b04-4eb1-999b-6f75f2715ee3.png)
 
