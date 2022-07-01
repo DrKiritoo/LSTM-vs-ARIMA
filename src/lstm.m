@@ -1,5 +1,8 @@
-%% Stage 0: Time series characteristics of daily precipitation & flow 
+%% INSTALL to work on MATLAB version 2021a and 2021b: 
+% Statistics and Machine Learning Toolbox
+% Econometrics Toolbox
 
+%% Stage 0: Time series characteristics of daily precipitation & flow 
 % Plot of precipitation and flow on the same graph.
 table_kegworth_flow = array2table(kegworth_flow); 
 
@@ -9,74 +12,100 @@ time = datetime(table_kegworth_flow.kegworth_flow3,...
 
 figure
 plot(time, table_kegworth_flow.kegworth_flow4);
-xlabel('Time (Days)');
-ylabel('Flow (m^{3}s^{-1})'); 
+xlabel('$Time$ $(Days)$', 'Interpreter','latex');
+ylabel('$Flow$ $(m^{3}/s$)', 'Interpreter','latex'); 
+set(gca, 'FontName', 'Cambria Math');
 hold on 
 yyaxis right
 plot(time, kegworth_precip.Precipitation);
 set(gca, 'YDir','reverse');
-ylabel('Precipitation (mm)'); 
+ylabel('$Precipitation$ $(mm)$', 'Interpreter','latex'); 
 ylim([0 200]); 
-legend('Flow', 'Precipitation')
+legend('$Flow$', '$Precipitation$', 'Interpreter','latex');
+
 
 % Conduct Ljung-Box test to check for autocorrelation for flow...
 % @ alpha = 0.05.
 res_flow = table_kegworth_flow.kegworth_flow4 -...
     mean(table_kegworth_flow.kegworth_flow1);
-[h1_flow, pValue_flow, stat_flow, cValue_flow] =...
-    lbqtest(res_flow, 'Lags', 20); 
-disp('Daily flow series test for autocorrelation:')
-disp(h1_flow); 
-disp(pValue_flow); 
-disp(stat_flow); 
-disp(cValue_flow); 
+%[h1_flow, pValue_flow, stat_flow, cValue_flow] =...
+%    lbqtest(res_flow, 'Lags', 20); 
+%disp('Daily flow series test for autocorrelation:')
+%disp(h1_flow); 
+%disp(pValue_flow); 
+%disp(stat_flow); 
+%disp(cValue_flow); 
 
 % Conduct Ljung-Box test to check for autocorrelation for...
 % precipitation @ alpha = 0.05.
 
 res_precip = kegworth_precip.Precipitation -...
     mean(kegworth_precip.Precipitation);
-[h1_precip, pValue_precip, stat_precip, cValue_precip] =...
-    lbqtest(res_precip, 'Lags', 20);
-disp('Daily precipitation series test for autocorrelation:')
-disp(h1_precip); 
-disp(pValue_precip); 
-disp(stat_precip); 
-disp(cValue_precip); 
+%[h1_precip, pValue_precip, stat_precip, cValue_precip] =...
+%    lbqtest(res_precip, 'Lags', 20);
+%disp('Daily precipitation series test for autocorrelation:')
+%disp(h1_precip); 
+%disp(pValue_precip); 
+%disp(stat_precip); 
+%disp(cValue_precip); 
 
 % Call the modified Mann-Kendall test for flow (mmtest).
-[H, pp_value, test_stat, crit] = mmtest(res_flow, 0.05); 
-disp('Modified Mann-Kendall test results for flow:')
-disp(H);
-disp(pp_value);
-disp(abs(test_stat)); 
-disp(crit); 
+%[H, pp_value, test_stat, crit] = mmtest(res_flow, 0.05); 
+%disp('Modified Mann-Kendall test results for flow:')
+%disp(H);
+%disp(pp_value);
+%disp(abs(test_stat)); 
+%disp(crit); 
 
-% Call the modified Mann-Kendall test for flow (mmtest).
-[H_2, pp_value_2, test_stat_2, crit_2] = mmtest(res_precip, 0.05); 
-disp('Modified Mann-Kendall test results for precipitation:')
-disp(H_2);
-disp(pp_value_2);
-disp(abs(test_stat_2)); 
-disp(crit_2); 
+% Call the modified Mann-Kendall test for precip (mmtest).
+%[H_2, pp_value_2, test_stat_2, crit_2] = mmtest(res_precip, 0.05); 
+%disp('Modified Mann-Kendall test results for precipitation:')
+%disp(H_2);
+%disp(pp_value_2);
+%disp(abs(test_stat_2)); 
+%disp(crit_2); 
+
+% Sen slope
+%disp(Sen_Slope(res_precip));
+%disp(Sen_Slope(res_flow));
+
+% Plot precip against flow 
+figure 
+scatter(res_precip, res_flow); 
+xlabel('$Precipitation$ $(mm)$', 'Interpreter','latex');
+ylabel('$Flow$ $(m^{3}/s$)', 'Interpreter','latex'); 
+set(gca, 'FontName', 'Cambria Math');
+title('$R = 0.3315$ and $\tau = 0.2632$', 'Interpreter','latex'); 
+xlim([0 50]); 
+ylim([0 700]);
+hold on 
+plot(xlim, ylim, 'LineStyle', '--'); 
+legend('', '$y = x$', 'Interpreter','latex');
+
+figure
+plotResiduals(fitlm(res_precip, res_flow), 'fitted');
+ 
+% Correlation coefficient
+[rho, pvalue] = corr(res_precip, res_flow, 'Type', 'Kendall');  
+disp(rho); 
+disp(pvalue); 
 
 % Compute Pearson's correlation coefficients between flow and...
 % precipitation
-rho = corrcoef(table_kegworth_flow.kegworth_flow4,...
-    kegworth_precip.Precipitation);
-disp('PMCC:')
-disp(rho); % Low value 0.3315 indicates weak correlation, therefore...
+%rho = corrcoef(table_kegworth_flow.kegworth_flow4,...
+%    kegworth_precip.Precipitation);
+%disp('PMCC:')
+%disp(rho); % Low value 0.3315 indicates weak correlation, therefore...
 % precipitation was not considered at a unique input variable +...
 % the results of the MK test show neither exhibit a trend over time +...
 % precipitation more strongly than flow. 
 
 % Kendall's rank correlation between flow and precipitation.
-tau = corr(res_flow, res_precip,'type', 'Kendall'); 
-disp('Kendalls rank correlation coefficient:'); 
-disp(tau);
+%tau = corr(res_flow, res_precip,'type', 'Kendall'); 
+%disp('Kendalls rank correlation coefficient:'); 
+%disp(tau);
 
-%% Stage 1: Re-format original Kegworth flow series.
-
+%% Stage 1a: Re-format original Kegworth flow series.
 % Start time series after 7 year gap.
 completed_keg = kegworth(4474:15280, :); 
 
@@ -105,12 +134,53 @@ months = 1:length(tmaxVals.GroupMax);
 % Plot maximum 7 day total flow against months forming new time series...
 % and mean.
 figure
-plot(months, tmaxVals.GroupMax); 
-xlabel('Months');
-ylabel('Flow (m^{3}s^{-1})');
+plot(months, tmaxVals.GroupMax, 'LineWidth', 0.6); 
+xlabel('$Month$', 'Interpreter','latex');
+ylabel('$Flow$ $(m^{3}/s)$', 'Interpreter','latex');
+set(gca, 'FontName', 'Cambria Math');
+legend('$Monthly$ $maximum$ $7-day$ $cumulative$ $flow$', 'Interpreter','latex');
 xlim([0 355]);
 
-%% Stage 2a: Decompose time series using SSA.
+
+
+%% Stage 2a: Determine optimal lag number via BIC methodology.
+% Run only on raw time series: 'minP' = 11
+
+% (1) Create zeros matrix to store all 16 combinations of ARIMA models...
+%LogL = zeros(4,4); 
+%PQ = zeros(4,4);
+%for p = 1:4
+%    for q = 1:4
+%        Mdl = arima(p, 0, q); 
+%        [EstMdl,~,LogL(p, q)] = estimate(Mdl, tmaxVals.GroupMax,...
+%            'Display', 'off');
+%        PQ(p, q) = p + q;
+%     end
+%end
+
+% (2) Calculate BIC per combination: 
+%logL = LogL(:);
+%pq = PQ(:);
+%[~,bic] = aicbic(logL, pq + 1, 355);
+%BIC = reshape(bic, 4, 4); 
+
+% (3) Obtain the optimal number of lags by finding minimum BIC value:
+%minBIC = min(BIC,[],'all');
+%minP = find(minBIC == BIC); 
+
+%% Stage 2b: ITERATIVE : Conduct Leybourne-McCabe test for stationarity.
+
+% (4) Input 'minP' into modified LM test to check for stationarity
+% If h = 0 then accept the null hypothesis. If h = 1 reject null.
+%[h, p_value, ~, ~] = lmctest(tmaxVals.GroupMax,...
+%   "trend", false, "Lags", 12, "Test", "var2", "alpha", 0.05);
+%disp(h);
+%disp(p_value);
+% If time series is stationary continue. 
+% Repeat this stage at Lag 12 until null is not rejected.
+% RESULTS: Differencing order 1 required. Therefore ARIMA(4, 1, 4).
+
+%% Stage 3a: Decompose time series using SSA.
 
 [trend, seasonal, irregular] = trenddecomp(tmaxVals.GroupMax, ...
     "ssa", (355-1)/2, NumSeasonal=1);
@@ -118,245 +188,286 @@ xlim([0 355]);
 % where N is the number of elements in the first input.
 % Therefore, 355 - 1/2 =  N 
 
-% Long-term trend component + irregular component: 
+% Long-term trend component: 
 figure 
-subplot(4,1,1);
-plot(months, irregular,'black'); 
-xlabel('Months');
-ylabel('I_t');
+subplot(3,1,1);
+plot(months, trend,'black'); 
+xlabel('$Month$','Interpreter','latex');
+ylabel('$T_t$','Interpreter','latex');
+set(gca, 'FontName', 'Cambria Math');
 xlim([0 355]);
-hold on 
-plot(1:355, trend,'--');
+ylim([0 400]); 
 
 % Seasonal component (used to support ACF plot results and model):
-subplot(4, 1, 2);
+subplot(3, 1, 2);
 plot(1:355, seasonal,'black'); 
-xlabel('Months');
-ylabel('S_t');
+xlabel('$Month$','Interpreter','latex');
+ylabel('$S_t$','Interpreter','latex');
+set(gca, 'FontName', 'Cambria Math');
+xlim([0 355]);
+ylim([-100 100])
+
+% Irregular component 
+subplot(3, 1, 3);
+plot(1:355, irregular,'black'); 
+xlabel('$Month$','Interpreter','latex');
+ylabel('$I_t$','Interpreter','latex');
+set(gca, 'FontName', 'Cambria Math');
 xlim([0 355]);
 
-%% Stage 2b: Determine optimal lag number via BIC methodology.
 
-% (1) Create zeros matrix to store all 16 combinations of ARIMA models...
-LogL = zeros(4,4); 
-PQ = zeros(4,4);
-for p = 1:4
-    for q = 1:4
-        Mdl = arima(p, 0, q); % d = 0, since time series will not...
-        % undergo time series transformation via differencing.
-        [EstMdl,~,LogL(p, q)] = estimate(Mdl, tmaxVals.GroupMax, ...
-            'Display', 'off');
-        PQ(p, q) = p + q;
-     end
-end
+%% LZ complexity
+quant = quantizer('double');
+binseq = num2bin(quant, transpose(irregular)); 
+binseq_vector = str2num(binseq); 
 
-% (2) Calculate BIC per combination: 
-logL = LogL(:);
-pq = PQ(:);
-[~,bic] = aicbic(logL, pq + 1, 355);
-BIC = reshape(bic, 4, 4); 
+[C, ~, ~] = lz(binseq_vector, 'primitive', 1); 
 
-% (3) Obtain the optimal number of lags by finding minimum BIC value:
-minBIC = min(BIC,[],'all');
-minP = find(minBIC == BIC); 
-
-%% Stage 2c: Check estimated optimal model with ACF and PACF + seasonality.
-% Interpretation: https://www.baeldung.com/cs/acf-pacf-plots-arma-modeling
-
+%% Stage 4: Check estimated optimal model with ACF and PACF + seasonality.
 % Calculate ACF and PACF values to 50 lags.
 lags = (0:1:50); 
 auto = autocorr(tmaxVals.GroupMax, 'NumLags', length(lags)-1); 
 parauto = parcorr(tmaxVals.GroupMax, 'NumLags', length(lags)-1);
 
 % Set bounds at 95% confidence interval.
-upper_bound = 0.05 + zeros(1, 51); 
-lower_bound = -0.05 + zeros(1, 51); 
+upper_bound = 0.05 + zeros(1, length(lags)); 
+lower_bound = -0.05 + zeros(1, length(lags)); 
 
 % 1st plot: ACF w/ bounds.
-subplot(4, 1, 3) 
+figure
+subplot(2, 1, 1) 
 stem(lags, auto, 'black'); 
-xlabel('lag {\tau}'); 
-ylabel('R ({\tau})');
+xlabel('Lag', 'Interpreter','latex'); 
+ylabel('ACF', 'Interpreter','latex');
+set(gca, 'FontName', 'Cambria Math');
 hold on 
-plot(lags, upper_bound, '--'); % Plot upper bound
+plot(lags, upper_bound, '--', 'Color', 'r'); % Plot upper bound
 hold on
-plot(lags, lower_bound, '--'); % Plot lower bound 
+plot(lags, lower_bound, '--', 'Color', 'r'); % Plot lower bound 
 xlim([0 50]);
 
 % 2nd plot: PACF w/ bounds. 
-subplot(4, 1, 4)
+subplot(2, 1, 2)
 stem(lags, parauto, 'black'); 
-xlabel('lag {\tau}'); 
-ylabel('R_{partial} ({\tau})');
+xlabel('Lag', 'Interpreter','latex'); 
+ylabel('PACF', 'Interpreter','latex');
 hold on 
-plot(lags, upper_bound,  '--'); % Plot upper bound
+plot(lags, upper_bound,  '--', 'Color', 'r'); % Plot upper bound
 hold on
-plot(lags, lower_bound,  '--'); % Plot lower bound 
+plot(lags, lower_bound,  '--', 'Color', 'r'); % Plot lower bound 
 xlim([0 50]);
 
-%% Stage 2d: Conduct Leybourne-McCabe test for stationarity.
 
-% (4) Input 'minP' into modified LM test to check for stationarity
-% If h = 0 then accept the null hypothesis. If h = 1 reject null.
-[h, p_value, ~, ~] = lmctest(tmaxVals.GroupMax,...
-    "trend", false, "Lags", 4, "Test", "var2", "alpha", 0.05);
-disp(h);
-disp(p_value);
-% In this case h = 0 therefore time series is stationary.
-% no additional stationary pre-processing is required.
+%%
+% Remove the noise component of the time series.
+% Seasonaility is of interest to describe pattern of flood volumes.
+time_series_RAW = tmaxVals.GroupMax; 
+time_series = time_series_RAW - irregular - trend; 
 
-%% Stage 3: Normalise time series & split ARIMA time series.
-%muu = mean(tmaxVals.GroupMax); 
-%sd =  std(tmaxVals.GroupMax);
+% Split training and forecasting data.
+TRAIN_RAW = tmaxVals.GroupMax(1:319);
+TRAIN = TRAIN_RAW - irregular(1:319) - trend(1:319); 
 
-% Split to training & testing (forecasting period).
-% Training normalisation.
-training_start = tmaxVals.GroupMax(1:319); 
-testing_start = tmaxVals.GroupMax(320:355); 
+% Do the same to FORECAST.
+FORECAST_RAW = tmaxVals.GroupMax(320:355);
+FORECAST = FORECAST_RAW - irregular(320:355) - trend(320:355); 
 
-muu = mean(training_start);
-sd = std(training_start); 
 
-training_norm = tanh_norm(training_start, muu, sd); 
-testing_norm = tanh_norm(testing_start, muu, sd); 
 
-%training_norm = norm_ts(1:319);
-%testing_norm = norm_ts(320:355);
+%% Stage 3b: Difference the time series. 
+diff_TRAIN = diff(TRAIN, 1);
 
-% Create ARIMA model w/ t-distribution. 
-arima_model = arima(4,0,4); 
-arima_model.Distribution = 't'; 
+%% Stage 3b: Normalise TRAIN and FORECAST using diff_TRAIN min and max values.
+N_TRAIN = min_max(diff_TRAIN, diff_TRAIN);
+N_FORECAST = min_max(FORECAST, diff_TRAIN);
 
-% Estimate model with normalised training data 
-est_arima_model = estimate(arima_model, training_norm, 'Display', 'off');
-residuals1 = infer(est_arima_model, training_norm);
-y_norm_train = training_norm - residuals1;
+%% Stage 3d: Use p and q values to estimate an ARIMA model. 
+arima_model = arima(4,1,4); 
+arima_model.Distribution = 'Gaussian'; 
+est_arima_model = estimate(arima_model, N_TRAIN, 'Display', 'off');
 
-% Estimate test values with estimated arima
-residuals2 = infer(est_arima_model, testing_norm); 
-y_norm_test = testing_norm - residuals2;
+residuals_TRAIN = infer(est_arima_model, N_TRAIN);
+A_TRAIN = N_TRAIN - residuals_TRAIN; % Results of ARIMA estimated model
 
-% Converts normalised arima generated data to original scale using training
-% data mean and standard deviation. 
-training_org = (sd*(atanh((2.*y_norm_train) - 1))./0.01) + muu;
-testing_org = (sd*(atanh((2.*y_norm_test) - 1))./0.01) + muu;
+residuals_FORECAST = infer(est_arima_model, N_FORECAST);
+A_FORECAST = N_FORECAST - residuals_FORECAST;
 
-% Line plot of ARIMA and original time series against time for training.
+%% Stage 3e: Denormalise A_TRAIN time series. 
+diff_TRAIN = inv_min_max(N_TRAIN, diff_TRAIN); 
+A_TRAIN = inv_min_max(A_TRAIN, diff_TRAIN); 
+
+diff_FORECAST = inv_min_max(N_FORECAST, diff_TRAIN); 
+A_FORECAST = inv_min_max(A_FORECAST, diff_TRAIN);
+
+%% Stage 3f: Reverse first order differencing by just using TRAIN.
+% TRAIN is before differencing and normalisation. 
+A_TRAIN(end+1) = TRAIN(end);
+A_TRAIN = conv(A_TRAIN, [1 1], 'valid');
+
+A_FORECAST(end+1) = FORECAST(end);
+A_FORECAST = conv(A_FORECAST, [1 1], 'valid');
+
+
+%% Stage 3f: Add the trend and seasonal components of TRAIN and A_TRAIN.
+TRAIN = TRAIN + irregular(1:319) + trend(1:319); 
+A_TRAIN = A_TRAIN + irregular(2:319) + trend(2:319);
+FORECAST = FORECAST + irregular(320:355) + trend(320:355); 
+A_FORECAST = A_FORECAST + irregular(320:355) + trend(320:355); 
+
+%% Stage 3g: Line plot training/forecast vs original.
+%figure 
+%plot(2:319, [TRAIN(2:319) A_TRAIN]); 
+%xlabel('Months'); 
+%ylabel('Flow m^{3}/s'); 
+%legend('Observed', 'ARIMA');
+%xlim([0 319]);
+%ylim([0 700]);
+
+%figure 
+%plot(1:36, [FORECAST(1:36) A_FORECAST]); 
+%xlabel('Months'); 
+%ylabel('Flow m^{3}/s'); 
+%legend('Observed', 'ARIMA');
+%xlim([0 36]);
+%ylim([0 700]);
+
+%% Stage 3h: Conduct performance evaluations : R2, MNS and RMSE.
+%%%% TRAIN %%%%
+
+% TRAIN: R^2 = 0.5340
+%lin_mdl_TRAIN = fitlm(TRAIN(2:319), A_TRAIN);
+%R2_TRAIN = lin_mdl_TRAIN.Rsquared.Ordinary; 
+%xlim([0 319]);
+%ylim([0 700]);
+
+% TRAIN: Scatter plot + check with residual plot to check for bias.
+%figure
+%scatter(TRAIN(2:319), A_TRAIN); 
+%lsline; 
+%xlabel('Observed (m^{3}/s)');
+%ylabel('Forecasted (m^{3}/s)'); 
+%xlim([0 700]);
+%ylim([0 450]);
+%hold on 
+%plot(xlim, ylim); 
+%legend('R^{2} = 0.5340', 'y = x', 'y = 0.7284x + 41.0320');
+%box on 
+
+%figure
+%plotResiduals(lin_mdl_TRAIN, 'fitted');
+
+% TRAIN: MNS = 0.1715
+%MNS_TRAIN= 1-(sum(abs(TRAIN(2:319) - A_TRAIN))/...
+%    sum(abs(TRAIN(2:319)-mean(TRAIN(2:319)))));
+
+% TRAIN: RMSE = 87.2587
+%RMSE_TRAIN = sqrt(mean((TRAIN(2:319) - A_TRAIN).^2));
+
+
+%%%% FORECAST %%%% 3, 6, 12, 18, 24, 36
+
+% FORECAST: R^2 = 
+lin_mdl_FORECAST = fitlm(FORECAST_RAW, A_FORECAST);
+R2_FORECAST = lin_mdl_FORECAST.Rsquared.Ordinary; 
+%xlim([0 36]);
+%ylim([0 700]);
+
+% FORECAST: MNS = 
+MNS_FORECAST= 1-(sum(abs(FORECAST(1:36) - A_FORECAST(1:36)))/...
+    sum(abs(FORECAST(1:36)-mean(FORECAST(1:36)))));
+
+% FORECAST: RMSE =
+RMSE_FORECAST = sqrt(mean((FORECAST(1:36) - A_FORECAST(1:36)).^2));
+
 figure
-plot(1:355, tmaxVals.GroupMax); 
-hold on
-plot(1:319, training_org);
+subplot(3,2,1);
+scatter(FORECAST(1:3), A_FORECAST(1:3)); 
+lsline; 
+xlabel('Observed (m^{3}/s)');
+ylabel('Forecasted (m^{3}/s)'); 
+xlim([0 700]);
+ylim([0 600]);
 hold on 
-plot(320:355, testing_org, 'Color', '#EDB120');
-xlabel('Months'); 
-ylabel('Flow (m^{3}s^{-1})'); xlabel('Months'); 
-ylabel('Flow (m^{3}s^{-1})'); 
-xlim([0 355]); 
-ylim([0 700]);
-hold on
-plot(1:355, zeros(1, 355) + mean(tmaxVals.GroupMax(1:319)), '--');
+plot(xlim, ylim); 
+legend('R^{2} = 0.9941', 'y = 1.1061x + 35.1380',  'y = x');
+box on 
+
+subplot(3,2,2);
+scatter(FORECAST(1:6), A_FORECAST(1:6)); 
+lsline; 
+xlabel('Observed (m^{3}/s)');
+ylabel('Forecasted (m^{3}/s)'); 
+xlim([0 700]);
+ylim([0 600]);
 hold on 
-plot(1:355, zeros(1, 355) + mean(tmaxVals.GroupMax(1:319)) +...
-    1.5*std(tmaxVals.GroupMax(1:319)), '--');
+plot(xlim, ylim); 
+legend('R^{2} = 0.9790', 'y = 0.9963x + 48.6100',  'y = x');
+box on 
+
+subplot(3,2,3);
+scatter(FORECAST(1:12), A_FORECAST(1:12)); 
+lsline; 
+xlabel('Observed (m^{3}/s)');
+ylabel('Forecasted (m^{3}/s)'); 
+xlim([0 700]);
+ylim([0 600]);
 hold on 
-hp = patch([320 354 354 320], [1 1 700 700], [245/255, 245/255, 245/255],...
-    'LineStyle', 'none'); 
-uistack(hp, 'bottom');
-legend('Forecasted', 'Observed', 'ARIMA: Training', 'ARIMA: Validation',...
-    'Mean', '1.5 Standard Deviation above Mean');
+plot(xlim, ylim); 
+legend('R^{2} = 0.9220','y = 1.1430x + -22.1280', 'y = x');
+box on 
 
-% Scatter plot training 
-figure
-scatter(tmaxVals.GroupMax(1:319), training_org);
-lsline;
-legend('y = 0.3662 + 78.2894', 'R^{2} = 0.3459');
-xlabel('Observed (m^{3}s^{-1})');
-ylabel('Forecasted (m^{3}s^{-1})'); 
+subplot(3,2,4);
+scatter(FORECAST(1:18), A_FORECAST(1:18)); 
+lsline; 
+xlabel('Observed (m^{3}/s)');
+ylabel('Forecasted (m^{3}/s)'); 
+xlim([0 700]);
+ylim([0 600]);
+hold on 
+plot(xlim, ylim); 
+legend('R^{2} = 0.8876', 'y = 1.0876x + 3.5806',  'y = x');
+box on 
 
-% Scatter plot testing 
-figure
-scatter(tmaxVals.GroupMax(320:355), testing_org);
-lsline;
-legend('y = 0.3651 + 80.5492', 'R^{2} = 0.2888');
-xlabel('Observed (m^{3}s^{-1})');
-ylabel('Forecasted (m^{3}s^{-1})'); 
-xlim([0 600]);
-ylim([0 350]);
+subplot(3,2,5);
+scatter(FORECAST(1:24), A_FORECAST(1:24)); 
+lsline; 
+xlabel('Observed (m^{3}/s)');
+ylabel('Forecasted (m^{3}/s)'); 
+xlim([0 700]);
+ylim([0 600]);
+hold on 
+plot(xlim, ylim); 
+legend('R^{2} = 0.8674', 'y = 1.0469x + -7.3006',  'y = x');
+box on 
 
-% Calculate R^2 (coeff of determination) for training and testing.
-lin_mdl_train = fitlm(tmaxVals.GroupMax(1:319), training_org);
-RSQ_train = lin_mdl_train.Rsquared.Ordinary; 
-lin_mdl_test = fitlm(tmaxVals.GroupMax(320:355), testing_org);
-RSQ_test = lin_mdl_test.Rsquared.Ordinary; 
+subplot(3,2,6);
+scatter(FORECAST(1:36), A_FORECAST(1:36)); 
+lsline; 
+xlabel('Observed (m^{3}/s)');
+ylabel('Forecasted (m^{3}/s)'); 
+xlim([0 700]);
+ylim([0 600]);
+hold on 
+plot(xlim, ylim); 
+legend('R^{2} = 0.9246', 'y = 1.1569x + -28.7220',  'y = x');
+box on 
 
-% Calculate RMSE for training and testing.
-RMSE_train = sqrt(mean((tmaxVals.GroupMax(1:319) - training_org).^2));
-RMSE_test = sqrt(mean((tmaxVals.GroupMax(320:355) - testing_org).^2));
-
-% Calculate modified NSE for training and testing.
-MNS_train = 1-(sum(abs(tmaxVals.GroupMax(1:319)-training_org))/...
-    sum(abs(tmaxVals.GroupMax(1:319) -...
-    mean(tmaxVals.GroupMax(1:319)))));
-MNS_test = 1-(sum(abs(tmaxVals.GroupMax(320:355)-testing_org))/...
-    sum(abs(tmaxVals.GroupMax(320:355) -...
-    mean(tmaxVals.GroupMax(320:355)))));
-
-%% Stage 4: 
-XTrain = num2cell(training_norm(1:end-1, :)); % training_norm
-TTrain = num2cell(training_norm(2:end, :)); 
-XTest = num2cell(testing_norm(1:end-1, :)); 
-TTest = num2cell(testing_norm(2:end, :)); 
-
-% Define LSTM network architecture
-featureDimension = size(XTrain{1}, 1);
-numResponses = size(TTrain{1}, 1);
-numHiddenUnits = 52; % Amount of information remembered between time steps
-LSTMDepth = 2;
-layers = sequenceInputLayer(featureDimension);
-
-for i = 1:LSTMDepth
-    layers = [layers;lstmLayer(numHiddenUnits,OutputMode="sequence")];
-end
-
-layers = [layers
-    fullyConnectedLayer(numResponses)
-    regressionLayer];
-
-% Specify training hyperparameters
-options = trainingOptions("adam", ...
-    ExecutionEnvironment="auto", ...
-    MaxEpochs=104, ...
-    MiniBatchSize=18, ...
-    ValidationData={XTest, TTest}, ...
-    InitialLearnRate=0.0001, ...
-    LearnRateDropFactor=0.3303, ... 
-    LearnRateDropPeriod=15, ...
-    GradientThreshold=1, ...
-    Shuffle="never", ... 
-    Verbose=1);
-
-% Train LSTM network
-net2 = trainNetwork(XTrain, TTrain, layers, options);
+%figure
+%plotResiduals(lin_mdl_FORECAST, 'fitted');
+%Visually the residuals should be scattered about the zero: 
+%https://www.quora.com/Are-high-R-squared-values-always-great
 
 
-XTrain = num2cell(training_norm(1:end-1, :)); 
-TTrain = num2cell(training_norm(2:end, :)); 
-XTest = num2cell(testing_norm(1:end-1, :)); 
-TTest = num2cell(testing_norm(2:end, :)); 
+%%%%%%%%%%%%%%%%%% END OF ARIMA MODEL DEVELOPMENT %%%%%%%%%%%%%%%%%%
 
-% Forecast (Test) LSTM network 
-net2 = resetState(net2); 
-[updatedLSTM, YTest] = predictAndUpdateState(net2, TTest); 
 
-% Reverse normalisatoion
-YTest = cell2mat(YTest);
-TTest = cell2mat(TTest); 
-%YTest = inv_tanh_norm(YTest, muu, sd);
-%TTest = inv_tanh_norm(TTest, muu, sd); 
+%% Stage 5a: LSTM
+ 
 
-figure
-plot(1:35, [TTest YTest]); 
-ylim([0 700]);
+
+
+
+
 
 
 
