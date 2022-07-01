@@ -38,13 +38,6 @@ function [H, pValue, W] = swtest(x, alpha)
 %     H = 0 => Do not reject the null hypothesis at significance level ALPHA.
 %     H = 1 => Reject the null hypothesis at significance level ALPHA.
 %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                Copyright (c) 17 March 2009 by Ahmed Ben Saïda          %
-%                 Department of Finance, IHEC Sousse - Tunisia           %
-%                       Email: ahmedbensaida@yahoo.com                   %
-%                    $ Revision 3.0 $ Date: 18 Juin 2014 $               %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
 % References:
 %
 % - Royston P. "Remark AS R94", Applied Statistics (1995), Vol. 44,
