@@ -1,5 +1,5 @@
 
-## Comparision of two data-driven approaches for long-term time series flood forecasting with a limited dataset - LSTM vs ARIMA  
+## Comparison of two data-driven approaches for long-term time series flood forecasting with a limited dataset - LSTM vs ARIMA  
 
 >This repository documents the development of an LSTM and ARIMA model in MATLAB.  
 
